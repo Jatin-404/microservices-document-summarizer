@@ -3,6 +3,8 @@ import httpx
 import os
 from dotenv import load_dotenv
 import uvicorn
+import json
+from pathlib import Path
 
 load_dotenv()
 APP_B_URL= os.getenv("APP_B_URL", "http://localhost:8001/process")
@@ -72,11 +74,27 @@ async def upload_file(file: UploadFile = File(...)):
                     detail= f"Unexpected error processing chunk {chunk['chunk_index']}: {str(e)}"
                 )
 
-    return {
+    result =  {
         "file_name" : file.filename,
         "total_chunks": len(summaries),
         "summaries": summaries
     }
+
+
+    # save to outputs folder 
+
+    # Get project root (parent of SERVICE-A)
+    BASE_DIR = Path(__file__).resolve().parent.parent
+    # Define outputs folder in project root
+    output_dir = BASE_DIR / "outputs"
+    output_dir.mkdir(exist_ok=True)
+    # Create output file path
+    output_path = output_dir / f"{file.filename.replace('.txt', '')}_summary.json"
+    # save json
+    with open(output_path, 'w') as f:
+        json.dump(result, f, indent=2)
+
+    return result
 
 
 
