@@ -1,0 +1,23 @@
+User
+  ↓
+Service A /upload
+  ↓
+Read file
+  ↓
+Split text/ chunking
+  ↓
+HTTP call → Service B /process
+            ↓
+        Validate JSON
+            ↓
+        Extract summary
+            ↓
+        Return JSON
+  ↓
+Collect summary
+  ↓
+Repeat for all chunks
+  ↓
+Return aggregated result
+  ↓
+User sees final JSON
