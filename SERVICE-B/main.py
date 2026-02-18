@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field, field_validator
 import uvicorn
+import ollama
 
 app = FastAPI()
 
@@ -19,11 +20,37 @@ class ChunkResponse(BaseModel):
     summary: str
     word_count: int
 
+async def generate_summary(text: str) -> str:
+    print("Calling LLM now...")
+    try:
+        response = ollama.chat(
+            model= "llama3.2:1b",
+            messages=[
+                {
+                    "role": "system",
+                    "content": 'You are a helpful assistant that creates concise summaries. Summarize the given text in one clear sentence.'
+                },
+                {
+                    'role': "user",
+                    "content":  f'Summarize this text in one sentence:\n\n{text}'
+                }
+            ],
+            options={
+                'temperature':0.3, # Lower = more focused
+                'num_predict':50   # Max tokens in response
+            }
+        )
+        summary = response['message']['content'].strip()
+        return summary
+    except Exception as e:
+        # Fallback to first sentence if Ollama fails
+        print(f"Ollama error: {e}, falling back to first sentence")
+        sentences = text.split(".")
+        return sentences[0].strip() if sentences else text.strip()
 
-def extract_first_sentence(text: str) -> str:
-    sentences = text.split(".")
-    first_sentence = sentences[0].strip()
-    return first_sentence
+
+
+
 @app.get("/health")
 async def health():
     return {
@@ -35,7 +62,7 @@ async def health():
 async def process_chunk(data: ChunkRequest):
     
     try:
-        summary = extract_first_sentence(data.text)
+        summary = await generate_summary(data.text)
 
         return ChunkResponse(
             chunk_index= data.chunk_index,

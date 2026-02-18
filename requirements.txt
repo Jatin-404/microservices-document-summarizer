@@ -1,4 +1,24 @@
-fastapi
-uvicorn
-httpx
-python-dotenv
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+httpx==0.25.1
+python-dotenv==1.0.0
+ollama==0.1.6
+pydantic==2.5.0
+```
+
+---
+
+## **.env.example** (for service-a):
+```
+APP_B_URL=http://localhost:8001/process
+```
+
+---
+
+## **Sample test file** (test-files/sample.txt):
+```
+Python is a high-level, interpreted programming language known for its simplicity and readability. Created by Guido van Rossum and first released in 1991, Python has become one of the most popular programming languages in the world. Its design philosophy emphasizes code readability with the use of significant indentation. Python supports multiple programming paradigms, including structured, object-oriented, and functional programming.
+
+The language's comprehensive standard library, often described as having "batteries included," provides tools suited to many tasks. Python is widely used in web development, data analysis, artificial intelligence, scientific computing, and automation. Its syntax allows programmers to express concepts in fewer lines of code than would be possible in languages such as C++ or Java.
+
+Python's popularity continues to grow, particularly in fields like machine learning and data science. Major organizations including Google, NASA, and CERN use Python for various applications. The language has a large and active community that contributes to a rich ecosystem of third-party packages available through the Python Package Index (PyPI). Python's versatility, ease of learning, and powerful capabilities make it an excellent choice for both beginners and experienced developers.
