@@ -28,7 +28,7 @@ def split_into_chunks(text: str, chunk_size: int = 200):
 @app.get("/health")
 async def health():
     return{
-        "Status": "Health",
+        "Status": "Healthy",
         "Service": "ingestion-serive"
     }
 
