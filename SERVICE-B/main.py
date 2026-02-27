@@ -1,7 +1,8 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field, field_validator
-import uvicorn
 import ollama
+from shared.logger import setup_logging
+logger = setup_logging("app-b")
 
 app = FastAPI()
 
@@ -21,7 +22,7 @@ class ChunkResponse(BaseModel):
     word_count: int
 
 async def generate_summary(text: str) -> str:
-    print("Calling LLM now...")
+    logger.info("Calling LLM now...")
     try:
         response = ollama.chat(
             model= "llama3.2:1b",
@@ -45,8 +46,11 @@ async def generate_summary(text: str) -> str:
         summary = response['message']['content'].strip()
         return summary
     except Exception as e:
+        logger.error("Ollama error, falling back to first sentence",
+                     extra={
+                         "error": str(e)
+                     })
         # Fallback to first sentence if Ollama fails
-        print(f"Ollama error: {e}, falling back to first sentence")
         sentences = text.split(".")
         return sentences[0].strip() if sentences else text.strip()
 
@@ -55,6 +59,8 @@ async def generate_summary(text: str) -> str:
 
 @app.get("/health")
 async def health():
+    logger.info("Health check called")
+                
     return {
         "Status": "Healthy",
         "Service": "processor-service"
@@ -72,10 +78,12 @@ async def process_chunk(data: ChunkRequest):
             word_count=len(data.text.split())
         )
     except Exception as e:
+        logger.error("Error processing chunk",
+                     extra={
+                         "error": str(e),
+                         "target_endpoint": f"/process"
+                     })
         raise HTTPException(
             status_code=500,
             detail=f"Error processing chunk : {str(e)} "
         )
-
-if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8001, reload=True)
