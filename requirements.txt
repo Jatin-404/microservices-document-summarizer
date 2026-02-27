@@ -6,3 +6,4 @@ ollama
 pydantic
 python-json-logger
 tenacity
+python-multipart

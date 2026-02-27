@@ -1,0 +1,28 @@
+services:
+  app-a:
+    build:
+      context: .
+      dockerfile: SERVICE-A/Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - APP_B_URL=http://app-b:8001/process
+      - LOG_ENV=docker
+    depends_on:
+      app-b:
+        condition: service_healthy
+
+  app-b:
+    build:
+      context: .
+      dockerfile: SERVICE-B/Dockerfile
+    ports:
+      - "8001:8001"
+    environment:
+      - LOG_ENV=docker
+      - OLLAMA_HOST=http://host.docker.internal:11434
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 3

@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field, field_validator
 import ollama
 from shared.logger import setup_logging
+
 logger = setup_logging("app-b")
 
 app = FastAPI()
@@ -24,7 +25,8 @@ class ChunkResponse(BaseModel):
 async def generate_summary(text: str) -> str:
     logger.info("Calling LLM now...")
     try:
-        response = ollama.chat(
+        client = ollama.Client(host="http://host.docker.internal:11434")  # create client with host
+        response = client.chat(
             model= "llama3.2:1b",
             messages=[
                 {
@@ -46,10 +48,12 @@ async def generate_summary(text: str) -> str:
         summary = response['message']['content'].strip()
         return summary
     except Exception as e:
-        logger.error("Ollama error, falling back to first sentence",
-                     extra={
-                         "error": str(e)
-                     })
+        # logger.error("Ollama error, falling back to first sentence",
+        #              extra={
+        #                  "error": str(e)
+        #              })
+        
+        logger.error(f"Ollama error: {type(e).__name__}: {repr(e)}")
         # Fallback to first sentence if Ollama fails
         sentences = text.split(".")
         return sentences[0].strip() if sentences else text.strip()

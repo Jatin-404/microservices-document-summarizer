@@ -4,16 +4,21 @@ import os
 from dotenv import load_dotenv
 import uvicorn
 import json
-from pathlib import Path
 from tenacity import (                   # Tenacity is a Python library that automatically retries a function when it fails.
     retry, stop_after_attempt,
     wait_exponential, retry_if_exception_type)
 from shared.logger import setup_logging
+from pathlib import Path                                    #  used this instead of jsut loadenv 
+                                                            #  bcz my env files are in apps folder not in
+env_path = Path(__file__).resolve().parent / ".env"         # root dir so whule running from root dir
+load_dotenv(dotenv_path=env_path)                           # it searches for env in root dir and this fixes this prob
+
+
+
 logger = setup_logging("app-a")
 
-
-load_dotenv()
 APP_B_URL= os.getenv("APP_B_URL", "http://localhost:8001/process")
+logger.info(f"APP_B_URL is: {APP_B_URL}")  # add this temporarily
 app = FastAPI()
 
 
