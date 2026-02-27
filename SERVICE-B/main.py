@@ -28,11 +28,13 @@ async def generate_summary(text: str) -> str:
             messages=[
                 {
                     "role": "system",
-                    "content": 'You are a helpful assistant that creates concise summaries. Summarize the given text in one clear sentence.'
+                    "content": "You are a summarization engine. "
+                    "Return ONLY one concise sentence summarizing the text. "
+                    "Do NOT include explanations, prefixes, or extra text."
                 },
                 {
                     'role': "user",
-                    "content":  f'Summarize this text in one sentence:\n\n{text}'
+                    "content":  text
                 }
             ],
             options={
