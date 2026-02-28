@@ -2,7 +2,7 @@ services:
   app-a:
     build:
       context: .
-      dockerfile: SERVICE-A/Dockerfile
+      dockerfile: SERVICE_A/Dockerfile
     ports:
       - "8000:8000"
     environment:
@@ -15,7 +15,7 @@ services:
   app-b:
     build:
       context: .
-      dockerfile: SERVICE-B/Dockerfile
+      dockerfile: SERVICE_B/Dockerfile
     ports:
       - "8001:8001"
     environment:

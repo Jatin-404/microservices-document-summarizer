@@ -3,7 +3,7 @@ RUN apt-get update && apt-get install -y curl
 WORKDIR /app
 COPY requirements.txt .
 RUN pip install -r requirements.txt
-COPY SERVICE-B/main.py ./SERVICE-B/main.py
+COPY SERVICE_B/main.py ./SERVICE_B/main.py
 COPY shared/ ./shared/
 EXPOSE 8001
-CMD ["uvicorn", "SERVICE-B.main:app", "--host", "0.0.0.0", "--port", "8001"]
+CMD ["uvicorn", "SERVICE_B.main:app", "--host", "0.0.0.0", "--port", "8001"]

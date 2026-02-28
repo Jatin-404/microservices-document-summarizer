@@ -1,2 +1,2 @@
-uvicorn SERVICE-A.main:app --reload --port 8000
-uvicorn SERVICE-B.main:app --reload --port 8001
+uvicorn SERVICE_A.main:app --reload --port 8000
+uvicorn SERVICE_B.main:app --reload --port 8001
